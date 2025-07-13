@@ -20,22 +20,44 @@ def print_centered(text, width, color_code="37"):
 def print_loading_art():
     width, _ = get_terminal_size()
     meeseeks_art = [
-        "    oooooooooo    ",
-        "   o          o   ",
-        "  o  ◉      ◉  o  ",
-        " o      ___      o ",
-        " o     \\___/     o ",
-        " o              o  ",
-        "  o            o   ",
-        "   oooooooooooo    ",
-        "       |  |        ",
-        "    ___||||___     ",
-        "   |          |    ",
-        "   |   LOOK   |    ",
-        "   |    AT    |    ",
-        "   |    ME!   |    ",
-        "   |__________|    "
+        "%%**###%%%%%%%%%%###*#***####*%*###%###",
+        "%%#####%%%%%%%%%%%%%%%%@@%%%%%%*##%%#*+",
+        "#%%%##%%%%%%%%%%%%###%%%@%%%%%%*%%%%##%",
+        "%%%%##%*+=====+##*+=**%%%%@%%%%*%%%%##%",
+        "@@%%#=-::::---=+++==#%%%%%%@@%%*%#%%#%%",
+        "%%%#=--------+++++++:+%%%%%%@%%*%%%%#%%",
+        "%%%*=------=+++++++++-+*+++++*%*%%%%###",
+        "%#%*-==*++**+++++++++=+%%%%%%%%*%%%%###",
+        "%%%%#+++++*++*%#*#++++##%@%%#%%*%%%%#%%",
+        "%%%%#+++++++++++**+++=###%@@@%%*#*#%#%%",
+        "%%%%#*++++++++++***+#**###%%@%%*%%%%#%%",
+        "@@%%#**++++++**++**#%+*###%%%%%*%%%%##%",
+        "%%%%####*+++++**+++%%%######*#%*%%%%#*+",
+        "%%%%####*+++++***+++++***##%%%%########",
+        "%%%%####+*++++****+*######%%###########",
+        "+%%%%##*+*++++*#***+*#####%%###########",
+        "+%#%%##**+++++*##***+*####%%%%########%",
+        "*%#%%##**+++++**#####*###%%%###%%%%%###",
+        "##%%%#**++++++++*#######%%%%%%%%%%%%%%%",
+        "#%####***+++++++++*%######%%###%%%%%%%%",
+        "###%%#+##+++++++++++####%%%%%##%%%%%%%@",
+        "%%%##*+##++++++++++++#####***%%%%%%%%%%",
+        "#####*+##*+++++++++++**+++*++**########",
+        "####*++*##*+++++++++*++*****+*####*++*+",
+        "*##*+++*=++************####*+**#*****+*",
+        "*++++++**++++*****####*+*##++*####**###",
+        "#########*++######+*##*+*#*++*########*",
+        "%%%%%%%%%%%%#**###+=+#*+*#*++#####*===+",
+        "===+#%%%%%%##+++*#*+*#####*++#+==++**++",
+        "::-=*%%%%%%%#***########**++++***++*###",
+        "---=*%%%%%%%########**==+*****+*#*+=+*#",
+        "++++#%%%%%%#####*+==++***+++******+***#",
+        "%%%%%%%%%%%#*+==++***++*##**++*****###*",
+        "%%%%%%%%%%%%%%%%%%%####*+++***#####***+",
+        "*######**#**##%%%%%%#*******###**+*****",
+        "-------:--:-=+%%%%%%#########*++=+*+***",
     ]
+
     loading_chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
     for frame in range(50):
         clear_screen()
@@ -48,7 +70,8 @@ def print_loading_art():
             print_centered(line, width, "32")
         print("\n" * 2)
         progress = frame * 2
-        if progress > 100: progress = 100
+        if progress > 100:
+            progress = 100
         bar_length, filled_length = 30, int(30 * progress // 100)
         bar = '█' * filled_length + '░' * (bar_length - filled_length)
         print_centered(f"Loading... {progress}%", width, "35")
@@ -99,10 +122,14 @@ def display_menu(options):
             key = get_key()
         except:
             key = input("Enter command (w/s/enter/q): ").lower()
-            if key == 'w': key = 'w'
-            elif key == 's': key = 's'
-            elif key == 'q': key = 'q'
-            elif key == '': key = '\r'
+            if key == 'w':
+                key = 'w'
+            elif key == 's':
+                key = 's'
+            elif key == 'q':
+                key = 'q'
+            elif key == '':
+                key = '\r'
         if key.lower() == 'w' or key == '\x1b[A':
             selected = (selected - 1) % len(options)
         elif key.lower() == 's' or key == '\x1b[B':
@@ -112,47 +139,35 @@ def display_menu(options):
         elif key.lower() == 'q':
             return -1
 
-def execute_option(option_text):
+def execute_option(option_text, callback_map):
     width, _ = get_terminal_size()
     clear_screen()
     print("\n" * 5)
-    if option_text.lower() == "exit program":
-        print_centered("👋 GOODBYE!", width, "31")
-        print_centered("Thanks for using Kirkland Mr. Meeseeks!", width, "37")
-        time.sleep(2)
-        return False
-    elif option_text.lower() == "start new session":
-        print_centered("🚀 STARTING NEW SESSION...", width, "32")
-        print_centered("Initializing Meeseeks Protocol...", width, "37")
-        time.sleep(2)
-        print_centered("Ready to help! I'm Mr. Meeseeks, look at me!", width, "33")
-    elif option_text.lower() == "load previous data":
-        print_centered("📁 LOADING PREVIOUS DATA...", width, "34")
-        print_centered("Scanning for previous sessions...", width, "37")
-        time.sleep(2)
-        print_centered("No previous data found. Starting fresh!", width, "33")
-    elif option_text.lower() == "system settings":
-        print_centered("⚙️ SYSTEM SETTINGS", width, "35")
-        print_centered("Configuration menu would go here...", width, "37")
-        time.sleep(2)
-        print_centered("Settings saved successfully!", width, "32")
+
+    key = option_text.lower()
+    if key in callback_map:
+        try:
+            callback_map[key]()  # Call the actual function
+        except Exception as e:
+            print_centered(f"❌ Error: {str(e)}", width, "31")
     else:
         print_centered(f"🔹 {option_text}", width, "36")
         print_centered("This feature is under construction!", width, "37")
+
     print("\n" * 2)
     print_centered("Press ENTER to return to menu...", width, "36")
     input()
-    return True
+    return key != "exit program"
 
-def run_meeseeks_menu(options):
-    """Main entry point for external use"""
+def run_meeseeks_menu(options, callback_map):
+    """Main entry point for external use with callbacks"""
     try:
         print_loading_art()
         while True:
             selected = display_menu(options)
             if selected == -1:
                 break
-            if not execute_option(options[selected]):
+            if not execute_option(options[selected], callback_map):
                 break
         clear_screen()
     except KeyboardInterrupt:
